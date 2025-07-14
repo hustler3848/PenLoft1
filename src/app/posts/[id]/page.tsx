@@ -15,6 +15,7 @@ import { Calendar } from "lucide-react";
 import { PostPageSkeleton } from "@/components/blog/post-page-skeleton";
 
 export default function PostPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const [post, setPost] = useState<Post | null | undefined>(undefined);
   const [author, setAuthor] = useState<User | null | undefined>(undefined);
   const [loading, setLoading] = useState(true);
@@ -23,7 +24,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
     const fetchData = async () => {
       // Simulate network delay
       await new Promise(resolve => setTimeout(resolve, 500));
-      const postData = getPost(params.id);
+      const postData = getPost(id);
       if (postData) {
         setPost(postData);
         setAuthor(getUser(postData.authorId));
@@ -33,7 +34,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
       setLoading(false);
     };
     fetchData();
-  }, [params.id]);
+  }, [id]);
 
   if (loading) {
     return <PostPageSkeleton />;

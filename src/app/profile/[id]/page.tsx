@@ -13,6 +13,7 @@ import { ProfilePageSkeleton } from '@/components/blog/profile-page-skeleton';
 import { BlogCardSkeleton } from '@/components/blog/blog-card-skeleton';
 
 export default function ProfilePage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
@@ -22,7 +23,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
     const fetchData = async () => {
       // Simulate network delay
       await new Promise(resolve => setTimeout(resolve, 500));
-      const userData = getUser(params.id);
+      const userData = getUser(id);
       if (userData) {
         setUser(userData);
         setUserPosts(getPostsByUser(userData.id));
@@ -33,7 +34,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
       setLoading(false);
     };
     fetchData();
-  }, [params.id]);
+  }, [id]);
 
   if (loading) {
     return <ProfilePageSkeleton />;
