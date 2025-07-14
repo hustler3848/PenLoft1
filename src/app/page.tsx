@@ -35,7 +35,7 @@ export default function Home() {
     };
     fetchData();
 
-    // Trigger animation after a short delay
+    // Trigger animation after component mounts
     const timer = setTimeout(() => {
       setIsAnimated(true);
     }, 100); 
@@ -67,13 +67,13 @@ export default function Home() {
       <section className="text-center py-16 md:py-24">
         <h1 
             className="font-headline text-4xl md:text-6xl font-bold tracking-tighter mb-4 fade-in"
-            style={{ animationDelay: '0.1s' }}
+            style={{ animationDelay: '0.2s' }}
         >
           Where Great Ideas Take Flight
         </h1>
         <p 
             className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8 fade-in"
-            style={{ animationDelay: '0.2s' }}
+            style={{ animationDelay: '0.3s' }}
         >
           PenLoft is a modern, open space for writers to share their stories and
           for readers to discover captivating content.
@@ -81,7 +81,7 @@ export default function Home() {
         
         <div 
             className="max-w-xl mx-auto mb-8 fade-in"
-            style={{ animationDelay: '0.3s' }}
+            style={{ animationDelay: '0.4s' }}
         >
           <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
              <PopoverTrigger asChild>
@@ -125,7 +125,7 @@ export default function Home() {
         <Link 
             href="/posts/new"
             className="fade-in inline-block"
-            style={{ animationDelay: '0.4s' }}
+            style={{ animationDelay: '0.5s' }}
         >
           <Button size="lg">Start Writing</Button>
         </Link>
@@ -134,7 +134,7 @@ export default function Home() {
       <section className="py-12">
         <div 
             className="flex items-center justify-center flex-wrap gap-2 mb-12 fade-in"
-            style={{ animationDelay: '0.5s' }}
+            style={{ animationDelay: '0.6s' }}
         >
           <Badge variant="secondary" className="text-base px-4 py-2">All</Badge>
           {categories.map((category) => (
@@ -155,7 +155,7 @@ export default function Home() {
                         post={post} 
                         author={author} 
                         className="fade-in" 
-                        style={{ animationDelay: `${0.6 + i * 0.1}s` }}
+                        style={{ animationDelay: `${0.7 + i * 0.15}s` }}
                      />;
             })
           )}
