@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { PenSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,12 +22,12 @@ export function Header() {
               Blog
             </Link>
             <SignedIn>
-                <Link
+              <Link
                 href="/user-profile"
                 className="transition-colors hover:text-foreground/80 text-foreground/60"
-                >
+              >
                 Profile
-                </Link>
+              </Link>
             </SignedIn>
           </nav>
         </div>
@@ -35,22 +36,18 @@ export function Header() {
           <SignedIn>
             <UserButton afterSignOutUrl="/" />
             <Link href="/posts/new">
-                <Button>
+              <Button>
                 Create Post
                 <PenSquare className="ml-2 h-4 w-4" />
-                </Button>
+              </Button>
             </Link>
           </SignedIn>
           <SignedOut>
-             <Link href="/sign-in">
-                <Button variant="ghost">
-                    Sign In
-                </Button>
+            <Link href="/sign-in">
+              <Button variant="ghost">Sign In</Button>
             </Link>
             <Link href="/sign-up">
-                <Button>
-                    Sign Up
-                </Button>
+              <Button>Sign Up</Button>
             </Link>
           </SignedOut>
         </div>
