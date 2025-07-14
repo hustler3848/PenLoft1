@@ -1,6 +1,7 @@
 "use server";
 
 import { suggestTags, type SuggestTagsInput } from "@/ai/flows/suggest-tags";
+import { suggestContent, type SuggestContentInput, type SuggestContentOutput } from "@/ai/flows/suggest-content";
 
 export async function getTagSuggestions(
   input: SuggestTagsInput
@@ -10,7 +11,18 @@ export async function getTagSuggestions(
     return result.tags;
   } catch (error) {
     console.error("Error suggesting tags:", error);
-    // In case of an error, return an empty array or handle it as needed.
     return [];
   }
+}
+
+export async function getContentSuggestions(
+  input: SuggestContentInput
+): Promise<SuggestContentOutput> {
+    try {
+        const result = await suggestContent(input);
+        return result;
+    } catch (error) {
+        console.error("Error suggesting content:", error);
+        return { suggestions: [] };
+    }
 }
