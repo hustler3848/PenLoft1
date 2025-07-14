@@ -1,0 +1,44 @@
+import Link from "next/link";
+import { PenSquare, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+export function Header() {
+  return (
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-16 items-center">
+        <div className="mr-auto flex items-center">
+          <Link href="/" className="mr-6 flex items-center space-x-2">
+            <PenSquare className="h-6 w-6 text-primary" />
+            <span className="font-bold font-headline text-lg">PenLoft</span>
+          </Link>
+          <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+            <Link
+              href="/"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Blog
+            </Link>
+            <Link
+              href="/profile/1"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Profile
+            </Link>
+          </nav>
+        </div>
+        <div className="flex items-center gap-4">
+           <Button variant="ghost" size="icon" className="md:hidden">
+            <User className="h-5 w-5" />
+            <span className="sr-only">Profile</span>
+          </Button>
+          <Link href="/posts/new">
+            <Button>
+              Create Post
+              <PenSquare className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </header>
+  );
+}
