@@ -24,8 +24,8 @@ export function BlogCard({ post, author }: BlogCardProps) {
   const postExcerpt = post.content.substring(0, 100) + "...";
 
   return (
-    <Link href={`/posts/${post.id}`}>
-      <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+    <Card asChild className="flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+      <Link href={`/posts/${post.id}`}>
         <CardHeader className="p-0">
           <div className="relative h-48 w-full">
             <Image
@@ -68,7 +68,7 @@ export function BlogCard({ post, author }: BlogCardProps) {
              <EngagementButtons initialLikes={post.likes} initialBookmarked={post.isBookmarked} />
            </div>
         </CardFooter>
-      </Card>
-    </Link>
+      </Link>
+    </Card>
   );
 }
