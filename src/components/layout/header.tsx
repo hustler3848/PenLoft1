@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { PenSquare, User } from "lucide-react";
+import { PenSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./theme-toggle";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 export function Header() {
   return (
@@ -19,26 +20,39 @@ export function Header() {
             >
               Blog
             </Link>
-            <Link
-              href="/profile/1"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              Profile
-            </Link>
+            <SignedIn>
+                <Link
+                href="/user-profile"
+                className="transition-colors hover:text-foreground/80 text-foreground/60"
+                >
+                Profile
+                </Link>
+            </SignedIn>
           </nav>
         </div>
-        <div className="flex items-center gap-2">
-           <Button variant="ghost" size="icon" className="md:hidden">
-            <User className="h-5 w-5" />
-            <span className="sr-only">Profile</span>
-          </Button>
+        <div className="flex items-center gap-4">
           <ThemeToggle />
-          <Link href="/posts/new">
-            <Button>
-              Create Post
-              <PenSquare className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
+          <SignedIn>
+            <UserButton afterSignOutUrl="/" />
+            <Link href="/posts/new">
+                <Button>
+                Create Post
+                <PenSquare className="ml-2 h-4 w-4" />
+                </Button>
+            </Link>
+          </SignedIn>
+          <SignedOut>
+             <Link href="/sign-in">
+                <Button variant="ghost">
+                    Sign In
+                </Button>
+            </Link>
+            <Link href="/sign-up">
+                <Button>
+                    Sign Up
+                </Button>
+            </Link>
+          </SignedOut>
         </div>
       </div>
     </header>
