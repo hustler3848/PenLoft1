@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PenSquare, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "./theme-toggle";
 
 export function Header() {
   return (
@@ -26,11 +27,12 @@ export function Header() {
             </Link>
           </nav>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
            <Button variant="ghost" size="icon" className="md:hidden">
             <User className="h-5 w-5" />
             <span className="sr-only">Profile</span>
           </Button>
+          <ThemeToggle />
           <Link href="/posts/new">
             <Button>
               Create Post
