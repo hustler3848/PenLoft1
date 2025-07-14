@@ -18,15 +18,16 @@ interface BlogCardProps {
   post: Post;
   author?: User;
   className?: string;
+  style?: React.CSSProperties;
 }
 
-export function BlogCard({ post, author, className }: BlogCardProps) {
+export function BlogCard({ post, author, className, style }: BlogCardProps) {
   if (!post) return null;
 
   const postExcerpt = post.content.substring(0, 100) + "...";
 
   return (
-    <Card asChild className={cn("flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1", className)}>
+    <Card asChild style={style} className={cn("flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1", className)}>
       <Link href={`/posts/${post.id}`}>
         <CardHeader className="p-0">
           <div className="relative h-48 w-full">

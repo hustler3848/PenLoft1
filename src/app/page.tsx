@@ -24,16 +24,23 @@ export default function Home() {
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [isAnimated, setIsAnimated] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      // Simulate network delay
       await new Promise(resolve => setTimeout(resolve, 500));
       setPosts(getPosts());
       setUsers(getUsers());
       setLoading(false);
     };
     fetchData();
+
+    // Trigger animation after a short delay
+    const timer = setTimeout(() => {
+      setIsAnimated(true);
+    }, 100); 
+
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -56,17 +63,26 @@ export default function Home() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-12" onClick={handleWrapperClick}>
+    <div className={`container mx-auto px-4 py-8 md:py-12 ${isAnimated ? 'animate-ready' : 'opacity-0'}`} onClick={handleWrapperClick}>
       <section className="text-center py-16 md:py-24">
-        <h1 className="font-headline text-4xl md:text-6xl font-bold tracking-tighter mb-4">
+        <h1 
+            className="font-headline text-4xl md:text-6xl font-bold tracking-tighter mb-4 fade-in"
+            style={{ animationDelay: '0.1s' }}
+        >
           Where Great Ideas Take Flight
         </h1>
-        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+        <p 
+            className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8 fade-in"
+            style={{ animationDelay: '0.2s' }}
+        >
           PenLoft is a modern, open space for writers to share their stories and
           for readers to discover captivating content.
         </p>
         
-        <div className="max-w-xl mx-auto mb-8">
+        <div 
+            className="max-w-xl mx-auto mb-8 fade-in"
+            style={{ animationDelay: '0.3s' }}
+        >
           <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
              <PopoverTrigger asChild>
                 <div className="relative">
@@ -106,13 +122,20 @@ export default function Home() {
           </Popover>
         </div>
 
-        <Link href="/posts/new">
+        <Link 
+            href="/posts/new"
+            className="fade-in inline-block"
+            style={{ animationDelay: '0.4s' }}
+        >
           <Button size="lg">Start Writing</Button>
         </Link>
       </section>
 
       <section className="py-12">
-        <div className="flex items-center justify-center flex-wrap gap-2 mb-12">
+        <div 
+            className="flex items-center justify-center flex-wrap gap-2 mb-12 fade-in"
+            style={{ animationDelay: '0.5s' }}
+        >
           <Badge variant="secondary" className="text-base px-4 py-2">All</Badge>
           {categories.map((category) => (
             <Badge key={category} variant="outline" className="text-base px-4 py-2 cursor-pointer hover:bg-secondary">
@@ -125,9 +148,15 @@ export default function Home() {
           {loading ? (
             Array.from({ length: 6 }).map((_, i) => <BlogCardSkeleton key={i} />)
           ) : (
-            posts.map((post) => {
+            posts.map((post, i) => {
               const author = users.find((user) => user.id === post.authorId);
-              return <BlogCard key={post.id} post={post} author={author} className="fade-in" />;
+              return <BlogCard 
+                        key={post.id} 
+                        post={post} 
+                        author={author} 
+                        className="fade-in" 
+                        style={{ animationDelay: `${0.6 + i * 0.1}s` }}
+                     />;
             })
           )}
         </div>
