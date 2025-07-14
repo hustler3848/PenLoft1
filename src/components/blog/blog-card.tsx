@@ -12,19 +12,21 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { EngagementButtons } from "./engagement-buttons";
 import { format } from 'date-fns';
+import { cn } from "@/lib/utils";
 
 interface BlogCardProps {
   post: Post;
   author?: User;
+  className?: string;
 }
 
-export function BlogCard({ post, author }: BlogCardProps) {
+export function BlogCard({ post, author, className }: BlogCardProps) {
   if (!post) return null;
 
   const postExcerpt = post.content.substring(0, 100) + "...";
 
   return (
-    <Card asChild className="flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+    <Card asChild className={cn("flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1", className)}>
       <Link href={`/posts/${post.id}`}>
         <CardHeader className="p-0">
           <div className="relative h-48 w-full">

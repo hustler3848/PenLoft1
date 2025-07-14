@@ -1,24 +1,50 @@
+
+"use client";
+
+import { useState, useEffect } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { getPost, getUser } from "@/lib/data";
+import type { Post, User } from "@/lib/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { EngagementButtons } from "@/components/blog/engagement-buttons";
 import { format } from "date-fns";
-import { Calendar, User as UserIcon } from "lucide-react";
+import { Calendar } from "lucide-react";
+import { PostPageSkeleton } from "@/components/blog/post-page-skeleton";
 
 export default function PostPage({ params }: { params: { id: string } }) {
-  const post = getPost(params.id);
+  const [post, setPost] = useState<Post | null | undefined>(undefined);
+  const [author, setAuthor] = useState<User | null | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const postData = getPost(params.id);
+      if (postData) {
+        setPost(postData);
+        setAuthor(getUser(postData.authorId));
+      } else {
+        setPost(null);
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, [params.id]);
+
+  if (loading) {
+    return <PostPageSkeleton />;
+  }
 
   if (!post) {
     notFound();
   }
 
-  const author = getUser(post.authorId);
-
   return (
-    <article className="container mx-auto max-w-4xl px-4 py-8 md:py-16">
+    <article className="container mx-auto max-w-4xl px-4 py-8 md:py-16 fade-in">
       <header className="mb-12">
         <div className="mb-4">
           <Badge>{post.category}</Badge>

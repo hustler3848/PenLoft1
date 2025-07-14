@@ -10,18 +10,31 @@ import { BlogCard } from "@/components/blog/blog-card";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { getPosts, getUsers } from "@/lib/data";
-import type { Post } from "@/lib/types";
+import type { Post, User } from "@/lib/types";
 import { Search } from "lucide-react";
+import { BlogCardSkeleton } from "@/components/blog/blog-card-skeleton";
 
 const categories = ["Technology", "Lifestyle", "Business", "Creative", "Code"];
 
 export default function Home() {
-  const posts = getPosts();
-  const users = getUsers();
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setPosts(getPosts());
+      setUsers(getUsers());
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (searchQuery.trim().length > 1) {
@@ -109,10 +122,14 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {posts.map((post) => {
-            const author = users.find((user) => user.id === post.authorId);
-            return <BlogCard key={post.id} post={post} author={author} />;
-          })}
+          {loading ? (
+            Array.from({ length: 6 }).map((_, i) => <BlogCardSkeleton key={i} />)
+          ) : (
+            posts.map((post) => {
+              const author = users.find((user) => user.id === post.authorId);
+              return <BlogCard key={post.id} post={post} author={author} className="fade-in" />;
+            })
+          )}
         </div>
       </section>
     </div>

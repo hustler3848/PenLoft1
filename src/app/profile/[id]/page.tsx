@@ -1,24 +1,52 @@
+
+"use client";
+
+import { useState, useEffect } from 'react';
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import { getUser, getPostsByUser, getUsers } from "@/lib/data";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import type { User, Post } from '@/lib/types';
+import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { BlogCard } from "@/components/blog/blog-card";
 import { Button } from "@/components/ui/button";
+import { ProfilePageSkeleton } from '@/components/blog/profile-page-skeleton';
+import { BlogCardSkeleton } from '@/components/blog/blog-card-skeleton';
 
 export default function ProfilePage({ params }: { params: { id: string } }) {
-  const user = getUser(params.id);
+  const [user, setUser] = useState<User | null | undefined>(undefined);
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const userData = getUser(params.id);
+      if (userData) {
+        setUser(userData);
+        setUserPosts(getPostsByUser(userData.id));
+        setAllUsers(getUsers());
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, [params.id]);
+
+  if (loading) {
+    return <ProfilePageSkeleton />;
+  }
 
   if (!user) {
     notFound();
   }
 
-  const userPosts = getPostsByUser(user.id);
-  const allUsers = getUsers();
   const totalLikes = userPosts.reduce((acc, post) => acc + post.likes, 0);
 
   return (
-    <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
+    <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12 fade-in">
       <Card className="mb-12 overflow-hidden">
         <div className="h-32 bg-muted" data-ai-hint="header background" />
         <CardContent className="p-6 pt-0">
@@ -61,6 +89,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                 key={post.id}
                 post={post}
                 author={allUsers.find((u) => u.id === post.authorId)}
+                className="fade-in"
               />
             ))
           ) : (
