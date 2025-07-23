@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Heart, Bookmark } from "lucide-react";
+import { useAuth } from "../auth-provider";
 
 interface EngagementButtonsProps {
   initialLikes: number;
@@ -19,6 +20,8 @@ export function EngagementButtons({
   showLabels = false,
 }: EngagementButtonsProps) {
   const router = useRouter();
+  const { user } = useAuth();
+  
   // We keep the state for visual feedback, but the action will be a redirect.
   const [likes, setLikes] = useState(initialLikes);
   const [isLiked, setIsLiked] = useState(false);
@@ -27,17 +30,26 @@ export function EngagementButtons({
   const handleLikeClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // In a real app, you'd check for authentication state.
-    // Here, we'll redirect to a login page.
-    router.push("/sign-in");
+    if (!user) {
+      router.push("/sign-in");
+      return;
+    }
+    // In a real app, you'd update the like state in your database.
+    // For this demo, we'll just toggle the state visually.
+    setIsLiked(!isLiked);
+    setLikes(isLiked ? likes - 1 : likes + 1);
   };
 
   const handleBookmarkClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // In a real app, you'd check for authentication state.
-    // Here, we'll redirect to a login page.
-    router.push("/sign-in");
+    if (!user) {
+      router.push("/sign-in");
+      return;
+    }
+    // In a real app, you'd update the bookmark state in your database.
+    // For this demo, we'll just toggle the state visually.
+    setIsBookmarked(!isBookmarked);
   };
 
   return (
@@ -47,7 +59,7 @@ export function EngagementButtons({
         size={showLabels ? 'default' : 'icon'}
         onClick={handleLikeClick}
         aria-pressed={isLiked}
-        title="Sign in to like this post"
+        title={user ? "Like this post" : "Sign in to like this post"}
       >
         <Heart
           className={cn(
@@ -63,7 +75,7 @@ export function EngagementButtons({
         size={showLabels ? 'default' : 'icon'}
         onClick={handleBookmarkClick}
         aria-pressed={isBookmarked}
-        title="Sign in to bookmark this post"
+        title={user ? "Bookmark this post" : "Sign in to bookmark this post"}
       >
         <Bookmark
           className={cn(

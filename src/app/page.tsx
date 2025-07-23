@@ -13,6 +13,7 @@ import { getPosts, getUsers } from "@/lib/data";
 import type { Post, User } from "@/lib/types";
 import { Search } from "lucide-react";
 import { BlogCardSkeleton } from "@/components/blog/blog-card-skeleton";
+import { useAuth } from "@/components/auth-provider";
 
 const categories = ["Technology", "Lifestyle", "Business", "Creative", "Code"];
 
@@ -24,6 +25,7 @@ export default function Home() {
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -115,7 +117,7 @@ export default function Home() {
         </div>
 
         <Link 
-            href="/posts/new"
+            href={user ? "/posts/new" : "/sign-in"}
             className="fade-in inline-block"
             style={{ animationDelay: '0.5s' }}
         >
