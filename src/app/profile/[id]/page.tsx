@@ -8,9 +8,7 @@ import type { User, Post } from '@/lib/types';
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { BlogCard } from "@/components/blog/blog-card";
-import { Button } from "@/components/ui/button";
 import { ProfilePageSkeleton } from '@/components/blog/profile-page-skeleton';
-import { BlogCardSkeleton } from '@/components/blog/blog-card-skeleton';
 
 export default function ProfilePage({ params }: { params: { id: string } }) {
   const { id } = params;
@@ -56,9 +54,6 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
               <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="person" />
               <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
             </Avatar>
-            <div className="ml-auto">
-                <Button variant="outline">Edit Profile</Button>
-            </div>
           </div>
          
           <div className="mt-4">
