@@ -11,17 +11,22 @@ import { ProfilePageSkeleton } from '@/components/blog/profile-page-skeleton';
 import { PostList } from '@/components/blog/post-list';
 
 export default function ProfilePage({ params }: { params: { username: string } }) {
-  const username = params.username;
+  const { username } = params;
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!username) return; // Don't fetch data if username is not available yet
+
     const fetchData = async () => {
+      setLoading(true);
       // Simulate network delay
       await new Promise(resolve => setTimeout(resolve, 500));
+      
       const userData = getUserByUsername(username);
+      
       if (userData) {
         setUser(userData);
         const allPostsData = getPosts();

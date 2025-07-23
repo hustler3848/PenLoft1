@@ -182,6 +182,7 @@ export function getUser(id: string) {
 }
 
 export function getUserByUsername(username: string) {
+  if (!username) return undefined;
   return users.find((user) => user.username.toLowerCase() === username.toLowerCase());
 }
 
