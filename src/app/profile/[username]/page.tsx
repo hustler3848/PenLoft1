@@ -17,14 +17,13 @@ export default function ProfilePage({ params }: { params: { username: string } }
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const username = params.username;
 
   useEffect(() => {
-    if (!username) return; // Don't fetch data if username is not available yet
+    const username = params.username;
+    if (!username) return;
 
     const fetchData = async () => {
       setLoading(true);
-      // Simulate network delay
       await new Promise(resolve => setTimeout(resolve, 500));
       
       const userData = getUserByUsername(username);
@@ -40,7 +39,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
       setLoading(false);
     };
     fetchData();
-  }, [username]);
+  }, [params.username]);
 
   if (loading) {
     return <ProfilePageSkeleton />;
