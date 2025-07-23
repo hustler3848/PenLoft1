@@ -3,17 +3,18 @@
 
 import { useState, useEffect } from 'react';
 import { notFound } from "next/navigation";
-import { getUser, getPostsByUser, getUsers } from "@/lib/data";
+import { getUser, getPosts, getPostsByUser, getUsers } from "@/lib/data";
 import type { User, Post } from '@/lib/types';
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { BlogCard } from "@/components/blog/blog-card";
 import { ProfilePageSkeleton } from '@/components/blog/profile-page-skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PostList } from '@/components/blog/post-list';
 
 export default function ProfilePage({ params }: { params: { id: string } }) {
   const { id } = params;
   const [user, setUser] = useState<User | null | undefined>(undefined);
-  const [userPosts, setUserPosts] = useState<Post[]>([]);
+  const [allPosts, setAllPosts] = useState<Post[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -24,7 +25,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
       const userData = getUser(id);
       if (userData) {
         setUser(userData);
-        setUserPosts(getPostsByUser(userData.id));
+        setAllPosts(getPosts());
         setAllUsers(getUsers());
       } else {
         setUser(null);
@@ -42,6 +43,10 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
     notFound();
   }
 
+  const userPosts = allPosts.filter(post => post.authorId === user.id);
+  const bookmarkedPosts = allPosts.filter(post => post.isBookmarked);
+  // As we don't have a logged-in user context, we'll show posts with more than 100 likes as a proxy for "Liked Posts"
+  const likedPosts = allPosts.filter(post => post.likes > 100);
   const totalLikes = userPosts.reduce((acc, post) => acc + post.likes, 0);
 
   return (
@@ -74,25 +79,22 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
         </CardContent>
       </Card>
 
-      <div>
-        <h2 className="font-headline text-2xl font-bold mb-6">
-          Posts by {user.name}
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {userPosts.length > 0 ? (
-            userPosts.map((post) => (
-              <BlogCard
-                key={post.id}
-                post={post}
-                author={allUsers.find((u) => u.id === post.authorId)}
-                className="fade-in"
-              />
-            ))
-          ) : (
-            <p>This user hasn't published any posts yet.</p>
-          )}
-        </div>
-      </div>
+      <Tabs defaultValue="published" className="w-full">
+        <TabsList className="grid w-full grid-cols-3 md:w-[400px]">
+          <TabsTrigger value="published">Published</TabsTrigger>
+          <TabsTrigger value="bookmarked">Bookmarked</TabsTrigger>
+          <TabsTrigger value="liked">Liked</TabsTrigger>
+        </TabsList>
+        <TabsContent value="published" className="mt-6">
+           <PostList posts={userPosts} users={allUsers} emptyStateMessage="This user hasn't published any posts yet." />
+        </TabsContent>
+        <TabsContent value="bookmarked" className="mt-6">
+            <PostList posts={bookmarkedPosts} users={allUsers} emptyStateMessage="No bookmarked posts found." />
+        </TabsContent>
+        <TabsContent value="liked" className="mt-6">
+            <PostList posts={likedPosts} users={allUsers} emptyStateMessage="No liked posts found." />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
