@@ -9,6 +9,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ProfilePageSkeleton } from '@/components/blog/profile-page-skeleton';
 import { PostList } from '@/components/blog/post-list';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Heart, Bookmark } from 'lucide-react';
 
 export default function ProfilePage({ params }: { params: { username: string } }) {
   const [user, setUser] = useState<User | null | undefined>(undefined);
@@ -81,10 +83,35 @@ export default function ProfilePage({ params }: { params: { username: string } }
         </CardContent>
       </Card>
       
-      <div className="mt-6">
-        <h2 className="font-headline text-2xl font-bold mb-6">Published Posts</h2>
-        <PostList posts={userPosts} users={allUsers} emptyStateMessage="This user hasn't published any posts yet." />
-      </div>
+      <Tabs defaultValue="published" className="w-full">
+        <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto mb-8">
+          <TabsTrigger value="published">Published</TabsTrigger>
+          <TabsTrigger value="liked">
+            <Heart className="mr-2 h-4 w-4" /> Liked
+          </TabsTrigger>
+          <TabsTrigger value="bookmarked">
+            <Bookmark className="mr-2 h-4 w-4" /> Bookmarked
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="published">
+           <h2 className="font-headline text-2xl font-bold mb-6">Published Posts</h2>
+           <PostList posts={userPosts} users={allUsers} emptyStateMessage="This user hasn't published any posts yet." />
+        </TabsContent>
+        <TabsContent value="liked">
+          <h2 className="font-headline text-2xl font-bold mb-6">Liked Posts</h2>
+          <div className="text-center py-16 text-muted-foreground">
+            <p>This user hasn't liked any posts yet.</p>
+            <p className="text-sm">(Feature coming soon!)</p>
+          </div>
+        </TabsContent>
+        <TabsContent value="bookmarked">
+          <h2 className="font-headline text-2xl font-bold mb-6">Bookmarked Posts</h2>
+           <div className="text-center py-16 text-muted-foreground">
+            <p>This user hasn't bookmarked any posts yet.</p>
+            <p className="text-sm">(Feature coming soon!)</p>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
