@@ -38,7 +38,6 @@ export function EngagementButtons({
       <Button
         variant="ghost"
         size={showLabels ? 'default' : 'icon'}
-        className="flex items-center gap-2"
         onClick={handleLikeClick}
         aria-pressed={isLiked}
       >
@@ -54,7 +53,6 @@ export function EngagementButtons({
       <Button
         variant="ghost"
         size={showLabels ? 'default' : 'icon'}
-        className="flex items-center gap-2"
         onClick={handleBookmarkClick}
         aria-pressed={isBookmarked}
       >
