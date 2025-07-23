@@ -24,7 +24,6 @@ export default function Home() {
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [isAnimated, setIsAnimated] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,13 +33,6 @@ export default function Home() {
       setLoading(false);
     };
     fetchData();
-
-    // Trigger animation after component mounts
-    const timer = setTimeout(() => {
-      setIsAnimated(true);
-    }, 100); 
-
-    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -63,7 +55,7 @@ export default function Home() {
   };
 
   return (
-    <div className={`container mx-auto px-4 py-8 md:py-12 ${isAnimated ? 'animate-ready' : 'opacity-0'}`} onClick={handleWrapperClick}>
+    <div className="container mx-auto px-4 py-8 md:py-12" onClick={handleWrapperClick}>
       <section className="text-center py-16 md:py-24">
         <h1 
             className="font-headline text-4xl md:text-6xl font-bold tracking-tighter mb-4 fade-in"
