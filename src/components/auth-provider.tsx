@@ -4,7 +4,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { PostPageSkeleton } from './blog/post-page-skeleton';
+import { LoadingSpinner } from './ui/loading-spinner';
 
 type AuthContextType = {
   user: User | null;
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
-      {loading ? <PostPageSkeleton /> : children}
+      {loading ? <LoadingSpinner /> : children}
     </AuthContext.Provider>
   );
 };
