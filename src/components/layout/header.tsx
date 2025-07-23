@@ -34,7 +34,7 @@ export function Header() {
 
   const getProfileLink = () => {
     if (!user) return "/sign-in";
-    const appUser = getUserByFuid(user.uid);
+    const appUser = getUserByFuid(user.uid, user.email);
     return appUser ? `/profile/${appUser.username}` : "/sign-in";
   };
 
@@ -101,8 +101,8 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right">
-              <SheetHeader className="sr-only">
-                <SheetTitle>Menu</SheetTitle>
+              <SheetHeader>
+                <SheetTitle className="sr-only">Menu</SheetTitle>
               </SheetHeader>
               <div className="flex flex-col gap-6 p-6">
                 <Link href="/" className="flex items-center space-x-2" onClick={closeSheet}>

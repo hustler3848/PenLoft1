@@ -174,6 +174,10 @@ This post will walk you through the steps to build a personal brand that resonat
 ];
 
 export function createNewUser(userData: { fuid: string; username: string; email: string; }) {
+    if (doesUsernameExist(userData.username)) {
+      console.warn("Username already exists. Cannot create new user.");
+      return null;
+    }
     const newUser: User = {
         id: `${users.length + 1}`,
         fuid: userData.fuid,
@@ -183,6 +187,7 @@ export function createNewUser(userData: { fuid: string; username: string; email:
         bio: 'This is a new PenLoft author!',
     };
     users.push(newUser);
+    fuidToId[userData.fuid] = newUser.id;
     return newUser;
 }
 
@@ -199,8 +204,20 @@ export function getUserByUsername(username: string) {
   return users.find((user) => user.username.toLowerCase() === username.toLowerCase());
 }
 
-export function getUserByFuid(fuid: string) {
-  return users.find(u => u.fuid === fuid);
+export function getUserByFuid(fuid: string, email?: string | null) {
+  const existingUser = users.find(u => u.fuid === fuid);
+  if (existingUser) {
+    return existingUser;
+  }
+  
+  // If user does not exist, create a new one.
+  // This handles users who sign up and are not in our initial mock data.
+  const newUsername = email ? email.split('@')[0] : `user${Math.floor(Math.random() * 10000)}`;
+  return createNewUser({
+    fuid: fuid,
+    username: newUsername,
+    email: email || `${newUsername}@example.com`,
+  });
 }
 
 
