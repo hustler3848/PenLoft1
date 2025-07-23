@@ -23,11 +23,10 @@ export default function PostPage({ params }: { params: { slug: string } }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const slug = params.slug;
     const fetchData = async () => {
       // Simulate network delay
       await new Promise(resolve => setTimeout(resolve, 500));
-      const postData = getPostBySlug(slug);
+      const postData = getPostBySlug(params.slug);
       
       if (postData) {
         const authorData = getUser(postData.authorId);
