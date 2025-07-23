@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Menu, PenSquare, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./theme-toggle";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useState } from "react";
 import { useAuth } from "../auth-provider";
 import { auth } from "@/lib/firebase";
@@ -101,6 +101,9 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right">
+              <SheetHeader className="sr-only">
+                <SheetTitle>Menu</SheetTitle>
+              </SheetHeader>
               <div className="flex flex-col gap-6 p-6">
                 <Link href="/" className="flex items-center space-x-2" onClick={closeSheet}>
                   <PenSquare className="h-6 w-6 text-primary" />
