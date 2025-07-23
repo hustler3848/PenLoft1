@@ -4,7 +4,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { LoadingSpinner } from './ui/loading-spinner';
+import { AppSkeleton } from './layout/app-skeleton';
 
 type AuthContextType = {
   user: User | null;
@@ -18,9 +18,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Simulate a slightly longer delay to make skeleton more visible
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
+       setTimeout(() => {
+        setUser(user);
+        setLoading(false);
+      }, 500); 
     });
 
     return () => unsubscribe();
@@ -28,7 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
-      {loading ? <LoadingSpinner /> : children}
+      {loading ? <AppSkeleton /> : children}
     </AuthContext.Provider>
   );
 };
