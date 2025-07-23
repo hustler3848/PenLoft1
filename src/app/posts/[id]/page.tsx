@@ -16,7 +16,6 @@ import { PostPageSkeleton } from "@/components/blog/post-page-skeleton";
 import { BlogCard } from "@/components/blog/blog-card";
 
 export default function PostPage({ params }: { params: { id: string } }) {
-  const { id } = params;
   const [post, setPost] = useState<Post | null | undefined>(undefined);
   const [author, setAuthor] = useState<User | null | undefined>(undefined);
   const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
@@ -24,6 +23,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const { id } = params;
     const fetchData = async () => {
       // Simulate network delay
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -46,7 +46,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
       setLoading(false);
     };
     fetchData();
-  }, [id]);
+  }, [params.id]);
 
   if (loading) {
     return <PostPageSkeleton />;
