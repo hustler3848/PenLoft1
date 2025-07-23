@@ -1,0 +1,39 @@
+diff --git a/node_modules/@clerk/nextjs/dist/esm/server/clerkMiddleware.js b/node_modules/@clerk/nextjs/dist/esm/server/clerkMiddleware.js
+index 4554b9d..7038e9c 100644
+--- a/node_modules/@clerk/nextjs/dist/esm/server/clerkMiddleware.js
++++ b/node_modules/@clerk/nextjs/dist/esm/server/clerkMiddleware.js
+@@ -21,7 +21,11 @@
+       const requestState = await createRequestState(request, {
+         ...options,
+         proxyUrl: options.proxyUrl || constants.PROXY_URL,
+-        domain: options.domain || constants.DOMAIN
++        domain: options.domain || constants.DOMAIN,
++        isSatellite: options.isSatellite,
++        signInUrl: options.signInUrl,
++        signUpUrl: options.signUpUrl,
++        afterSignInUrl: options.afterSignInUrl
+       });
+       if (requestState.isUnknown) {
+         return new Response("Clerk: Internal Error", { status: 500 });
+diff --git a/node_modules/@clerk/nextjs/dist/esm/server/createRequestState.js b/node_modules/@clerk/nextjs/dist/esm/server/createRequestState.js
+index a41219b..d629a8f 100644
+--- a/node_modules/@clerk/nextjs/dist/esm/server/createRequestState.js
++++ b/node_modules/@clerk/nextjs/dist/esm/server/createRequestState.js
+@@ -34,7 +34,13 @@
+   const { headers } = request;
+   const { isSatellite, domain, proxyUrl, signInUrl, signUpUrl } = options;
+   const { user, session, organization, primaryDomain, aat, isInterstitial, isUnknown } = await loadInterstitial({
+-    ...options,
+-    headers
++    apiKey: options.apiKey,
++    secretKey: options.secretKey,
++    jwtKey: options.jwtKey,
++    apiUrl: options.apiUrl,
++    apiVersion: options.apiVersion,
++    isSatellite,
++    domain,
++    proxyUrl
+   });
+   const hasAat = !!aat;
+   const isNormalSignedOutState = !isInterstitial && !user && !session;
+
