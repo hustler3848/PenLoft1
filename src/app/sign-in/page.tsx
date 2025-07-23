@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 
 const signInSchema = z.object({
   email: z.string().email("Invalid email address."),
@@ -27,6 +27,7 @@ export default function SignInPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -46,9 +47,13 @@ export default function SignInPage() {
       });
       router.push("/");
     } catch (error: any) {
+      let description = "An unexpected error occurred.";
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+        description = "Invalid email or password. Please try again.";
+      }
       toast({
         title: "Sign In Failed",
-        description: error.message || "An unexpected error occurred.",
+        description,
         variant: "destructive",
       });
     } finally {
@@ -72,7 +77,18 @@ export default function SignInPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" {...register("password")} />
+              <div className="relative">
+                <Input id="password" type={showPassword ? "text" : "password"} {...register("password")} />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
+              </div>
               {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
             </div>
             <Button type="submit" disabled={isLoading} className="w-full">

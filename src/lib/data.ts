@@ -1,21 +1,25 @@
+
 import type { User, Post } from './types';
 
 const users: User[] = [
   {
     id: '1',
     name: 'Alicia Keys',
+    username: 'aliciakeys',
     avatarUrl: 'https://placehold.co/100x100.png',
     bio: 'Software Engineer & Tech Blogger. Exploring the latest in web development and open source.',
   },
   {
     id: '2',
     name: 'Ben Carter',
+    username: 'bencarter',
     avatarUrl: 'https://placehold.co/100x100.png',
     bio: 'UX Designer with a passion for creating beautiful and intuitive user experiences.',
   },
   {
     id: '3',
     name: 'Chloe Davis',
+    username: 'chloedavis',
     avatarUrl: 'https://placehold.co/100x100.png',
     bio: 'Startup founder and business strategist. Sharing insights on entrepreneurship and productivity.',
   },
@@ -163,6 +167,10 @@ export function getUsers() {
 
 export function getUser(id: string) {
   return users.find((user) => user.id === id);
+}
+
+export function doesUsernameExist(username: string) {
+    return users.some(user => user.username.toLowerCase() === username.toLowerCase());
 }
 
 export function getPosts() {

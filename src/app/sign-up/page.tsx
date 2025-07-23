@@ -8,15 +8,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import { doesUsernameExist } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 
 const signUpSchema = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters long.").refine(async (username) => {
+    return !doesUsernameExist(username);
+  }, "Username is already taken."),
   email: z.string().email("Invalid email address."),
   password: z.string().min(6, "Password must be at least 6 characters long."),
 });
@@ -27,6 +31,7 @@ export default function SignUpPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -34,11 +39,14 @@ export default function SignUpPage() {
     formState: { errors },
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
+    mode: 'onChange',
   });
 
   const onSubmit = async (data: SignUpFormData) => {
     setIsLoading(true);
     try {
+      // Note: In a real app, you'd also save the username to a Firestore collection
+      // associated with the user's UID from the created user object.
       await createUserWithEmailAndPassword(auth, data.email, data.password);
       toast({
         title: "Account Created!",
@@ -46,9 +54,13 @@ export default function SignUpPage() {
       });
       router.push("/");
     } catch (error: any) {
+      let description = "An unexpected error occurred.";
+      if (error.code === 'auth/email-already-in-use') {
+        description = "This email address is already in use. Please try another.";
+      }
       toast({
         title: "Sign Up Failed",
-        description: error.message || "An unexpected error occurred.",
+        description,
         variant: "destructive",
       });
     } finally {
@@ -66,13 +78,29 @@ export default function SignUpPage() {
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6">
             <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input id="username" type="text" {...register("username")} placeholder="your_username" />
+              {errors.username && <p className="text-sm text-destructive">{errors.username.message}</p>}
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" {...register("email")} placeholder="you@example.com" />
               {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" {...register("password")} />
+              <div className="relative">
+                <Input id="password" type={showPassword ? "text" : "password"} {...register("password")} />
+                 <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
+              </div>
               {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
             </div>
             <Button type="submit" disabled={isLoading} className="w-full">
