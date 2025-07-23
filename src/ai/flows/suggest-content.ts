@@ -47,7 +47,7 @@ const prompt = ai.definePrompt({
 
   Topic: {{{topic}}}
 
-  Do not include any introductory or concluding remarks. The only thing that should be in the output is a JSON blob conforming to the output schema.
+  Please provide the output in a JSON format that adheres to the following schema.
   `,
 });
 
