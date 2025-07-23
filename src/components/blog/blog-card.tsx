@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import Image from "next/image";
 import type { Post, User } from "@/lib/types";
@@ -28,7 +29,7 @@ export function BlogCard({ post, author, className, style }: BlogCardProps) {
 
   return (
     <Card style={style} className={cn("flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group", className)}>
-      <Link href={`/posts/${post.id}`} className="flex flex-col h-full">
+      <Link href={`/posts/${post.slug}`} className="flex flex-col h-full">
         <CardHeader className="p-0">
           <div className="relative h-48 w-full">
             <Image

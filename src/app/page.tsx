@@ -96,7 +96,7 @@ export default function Home() {
                 <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-2" align="start">
                     <div className="space-y-2">
                         {filteredPosts.map(post => (
-                            <Link href={`/posts/${post.id}`} key={post.id} className="block">
+                            <Link href={`/posts/${post.slug}`} key={post.id} className="block">
                                 <div className="flex items-center gap-4 p-2 rounded-md hover:bg-secondary transition-colors">
                                     <Image 
                                         src={post.imageUrl}

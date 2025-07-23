@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { getPost, getUser, getPosts, getUsers } from "@/lib/data";
+import { getPostBySlug, getUser, getPosts, getUsers } from "@/lib/data";
 import type { Post, User } from "@/lib/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +15,7 @@ import { Calendar } from "lucide-react";
 import { PostPageSkeleton } from "@/components/blog/post-page-skeleton";
 import { BlogCard } from "@/components/blog/blog-card";
 
-export default function PostPage({ params }: { params: { id: string } }) {
+export default function PostPage({ params }: { params: { slug: string } }) {
   const [post, setPost] = useState<Post | null | undefined>(undefined);
   const [author, setAuthor] = useState<User | null | undefined>(undefined);
   const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
@@ -23,11 +23,11 @@ export default function PostPage({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const id = params.id;
+    const slug = params.slug;
     const fetchData = async () => {
       // Simulate network delay
       await new Promise(resolve => setTimeout(resolve, 500));
-      const postData = getPost(id);
+      const postData = getPostBySlug(slug);
       
       if (postData) {
         const authorData = getUser(postData.authorId);
@@ -46,7 +46,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
       setLoading(false);
     };
     fetchData();
-  }, [params.id]);
+  }, [params.slug]);
 
   if (loading) {
     return <PostPageSkeleton />;

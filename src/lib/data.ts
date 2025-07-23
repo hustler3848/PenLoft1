@@ -40,6 +40,7 @@ const users: User[] = [
 const posts: Post[] = [
   {
     id: '1',
+    slug: 'mastering-typescript-for-modern-web-development',
     title: 'Mastering TypeScript for Modern Web Development',
     content: `
 TypeScript has become an essential tool for modern web developers. Its static typing capabilities help catch errors early, improve code quality, and make large-scale applications more maintainable. In this post, we'll dive deep into some advanced TypeScript features.
@@ -62,6 +63,7 @@ By the end of this article, you'll have a solid understanding of how to leverage
   },
   {
     id: '2',
+    slug: 'the-art-of-minimalist-design',
     title: 'The Art of Minimalist Design',
     content: `
 Minimalism in design is not just about what you remove, but about the intention behind what you keep. It's a philosophy that prioritizes clarity, function, and simplicity.
@@ -84,6 +86,7 @@ This post explores how to apply these principles to create user interfaces that 
   },
   {
     id: '3',
+    slug: '10-strategies-for-scaling-your-startup',
     title: '10 Strategies for Scaling Your Startup',
     content: `
 Scaling a startup is one of the most challenging phases for any founder. It requires a shift in mindset from building a product to building a company.
@@ -107,6 +110,7 @@ We'll break down each strategy with actionable advice and real-world examples to
   },
    {
     id: '4',
+    slug: 'a-guide-to-a-healthy-work-life-balance',
     title: 'A Guide to a Healthy Work-Life Balance',
     content: `
 In today's fast-paced world, achieving a healthy work-life balance can seem impossible. However, it's crucial for long-term well-being and productivity.
@@ -129,6 +133,7 @@ Implementing these small changes can have a significant impact on your overall q
   },
   {
     id: '5',
+    slug: 'the-future-of-frontend-trends-to-watch-in-2025',
     title: 'The Future of Frontend: Trends to Watch in 2025',
     content: `
 The frontend landscape is constantly evolving. As we look towards 2025, several key trends are emerging that will shape the future of web development.
@@ -151,6 +156,7 @@ This article provides a comprehensive overview of these trends and what they mea
   },
   {
     id: '6',
+    slug: 'how-to-build-a-powerful-personal-brand',
     title: 'How to Build a Powerful Personal Brand',
     content: `
 A strong personal brand is a valuable asset in any career. It's about showcasing your unique skills and personality to create opportunities.
@@ -232,6 +238,11 @@ export function getPosts() {
 export function getPost(id: string) {
   return posts.find((post) => post.id === id);
 }
+
+export function getPostBySlug(slug: string) {
+  return posts.find((post) => post.slug === slug);
+}
+
 
 export function getPostsByUser(userId: string) {
   return posts.filter((post) => post.authorId === userId);

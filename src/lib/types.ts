@@ -10,6 +10,7 @@ export interface User {
 
 export interface Post {
   id: string;
+  slug: string;
   title: string;
   content: string;
   authorId: string;
