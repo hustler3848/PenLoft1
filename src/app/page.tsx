@@ -29,8 +29,9 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setPosts(getPosts());
+      setLoading(true);
+      const postsData = await getPosts();
+      setPosts(postsData);
       setUsers(getUsers());
       setLoading(false);
     };

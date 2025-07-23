@@ -1,5 +1,7 @@
 
 import type { User, Post } from './types';
+import { db } from './firebase';
+import { collection, doc, getDocs, getDoc, setDoc, query, where, orderBy, limit } from 'firebase/firestore';
 
 // In a real app, you would fetch this from a database.
 // We are mapping Firebase UIDs to our mock users.
@@ -10,7 +12,7 @@ const fuidToId: Record<string, string> = {
 };
 
 
-const users: User[] = [
+let users: User[] = [
   {
     id: '1',
     fuid: 'c8aH423j2eM9n7oP1qR5tU6wXvY3',
@@ -37,7 +39,7 @@ const users: User[] = [
   },
 ];
 
-const posts: Post[] = [
+const initialPosts: Post[] = [
   {
     id: '1',
     slug: 'mastering-typescript-for-modern-web-development',
@@ -179,6 +181,22 @@ This post will walk you through the steps to build a personal brand that resonat
   },
 ];
 
+async function seedInitialData() {
+    const postsCollection = collection(db, 'posts');
+    const postsSnapshot = await getDocs(postsCollection);
+    if (postsSnapshot.empty) {
+        console.log("Seeding initial posts...");
+        for (const post of initialPosts) {
+            const postRef = doc(db, 'posts', post.id);
+            await setDoc(postRef, post);
+        }
+    }
+}
+
+// Call this once, maybe in a layout or app entry point if it were a real app with proper architecture.
+// For now, we'll just let it be called on module load.
+seedInitialData();
+
 export function createNewUser(userData: { fuid: string; username: string; email: string; }) {
     if (doesUsernameExist(userData.username)) {
       console.warn("Username already exists. Cannot create new user.");
@@ -197,7 +215,7 @@ export function createNewUser(userData: { fuid: string; username: string; email:
     return newUser;
 }
 
-export function createPost(postData: { title: string; content: string; category: string; tags: string[]; authorId: string; }) {
+export async function createPost(postData: { title: string; content: string; category: string; tags: string[]; authorId: string; }) {
     const { title, content, category, tags, authorId } = postData;
     const author = users.find(u => u.fuid === authorId);
 
@@ -206,14 +224,15 @@ export function createPost(postData: { title: string; content: string; category:
         return null;
     }
 
-    // A simple slug generation function
     const generateSlug = (title: string) => {
         return title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
     }
 
+    const newPostRef = doc(collection(db, 'posts'));
+
     const newPost: Post = {
-        id: `${posts.length + 1}`,
-        slug: generateSlug(title),
+        id: newPostRef.id,
+        slug: generateSlug(title) + '-' + newPostRef.id.slice(0, 5),
         title: title,
         content: content,
         authorId: author.id,
@@ -225,8 +244,7 @@ export function createPost(postData: { title: string; content: string; category:
         isBookmarked: false
     };
 
-    // Add the new post to the beginning of the array so it appears first
-    posts.unshift(newPost);
+    await setDoc(newPostRef, newPost);
     return newPost;
 }
 
@@ -249,8 +267,6 @@ export function getUserByFuid(fuid: string, email?: string | null) {
     return existingUser;
   }
   
-  // If user does not exist, create a new one.
-  // This handles users who sign up and are not in our initial mock data.
   const newUsername = email ? email.split('@')[0] : `user${Math.floor(Math.random() * 10000)}`;
   const userByUsername = getUserByUsername(newUsername);
   const finalUsername = userByUsername ? `${newUsername}${Math.floor(Math.random() * 10000)}` : newUsername;
@@ -267,19 +283,37 @@ export function doesUsernameExist(username: string) {
     return users.some(user => user.username.toLowerCase() === username.toLowerCase());
 }
 
-export function getPosts() {
-  return posts;
+export async function getPosts(): Promise<Post[]> {
+  const postsCollection = collection(db, 'posts');
+  const q = query(postsCollection, orderBy('createdAt', 'desc'));
+  const postsSnapshot = await getDocs(q);
+  const postsList = postsSnapshot.docs.map(doc => doc.data() as Post);
+  return postsList;
 }
 
-export function getPost(id: string) {
-  return posts.find((post) => post.id === id);
+export async function getPost(id: string): Promise<Post | null> {
+  const postRef = doc(db, 'posts', id);
+  const postSnap = await getDoc(postRef);
+  if (postSnap.exists()) {
+      return postSnap.data() as Post;
+  }
+  return null;
 }
 
-export function getPostBySlug(slug: string) {
-  return posts.find((post) => post.slug === slug);
+export async function getPostBySlug(slug: string): Promise<Post | null> {
+  const postsCollection = collection(db, 'posts');
+  const q = query(postsCollection, where('slug', '==', slug), limit(1));
+  const postsSnapshot = await getDocs(q);
+  if (!postsSnapshot.empty) {
+      return postsSnapshot.docs[0].data() as Post;
+  }
+  return null;
 }
 
-
-export function getPostsByUser(userId: string) {
-  return posts.filter((post) => post.authorId === userId);
+export async function getPostsByUser(userId: string): Promise<Post[]> {
+  const postsCollection = collection(db, 'posts');
+  const q = query(postsCollection, where('authorId', '==', userId), orderBy('createdAt', 'desc'));
+  const postsSnapshot = await getDocs(q);
+  const postsList = postsSnapshot.docs.map(doc => doc.data() as Post);
+  return postsList;
 }

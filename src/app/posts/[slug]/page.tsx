@@ -24,16 +24,15 @@ export default function PostPage({ params }: { params: { slug: string } }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      const postData = getPostBySlug(params.slug);
+      setLoading(true);
+      const postData = await getPostBySlug(params.slug);
       
       if (postData) {
         const authorData = getUser(postData.authorId);
         setPost(postData);
         setAuthor(authorData);
 
-        const allPostsData = getPosts();
+        const allPostsData = await getPosts();
         const related = allPostsData
           .filter(p => p.category === postData.category && p.id !== postData.id)
           .slice(0, 3);

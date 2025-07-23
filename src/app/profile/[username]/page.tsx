@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { notFound } from "next/navigation";
-import { getUserByUsername, getPosts, getUsers } from "@/lib/data";
+import { getUserByUsername, getPostsByUser, getUsers } from "@/lib/data";
 import type { User, Post } from '@/lib/types';
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -24,14 +24,13 @@ export default function ProfilePage({ params }: { params: { username: string } }
 
     const fetchData = async () => {
       setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 500));
       
       const userData = getUserByUsername(username);
       
       if (userData) {
         setUser(userData);
-        const allPostsData = getPosts();
-        setUserPosts(allPostsData.filter(post => post.authorId === userData.id));
+        const userPostsData = await getPostsByUser(userData.id);
+        setUserPosts(userPostsData);
         setAllUsers(getUsers());
       } else {
         setUser(null);

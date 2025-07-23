@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { X } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import { createPost } from "@/lib/data";
 import { useAuth } from "../auth-provider";
 
@@ -33,9 +33,10 @@ interface PostFormProps {
 export function PostForm({ children }: PostFormProps) {
   const router = useRouter();
   const { toast } = useToast();
-  const { user } = useAuth(); // We'll need the logged-in user's ID
+  const { user } = useAuth();
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const methods = useForm<PostFormData>({
     resolver: zodResolver(postSchema),
@@ -67,7 +68,7 @@ export function PostForm({ children }: PostFormProps) {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
   
-  const onSubmit = (data: PostFormData) => {
+  const onSubmit = async (data: PostFormData) => {
     if (!user) {
         toast({
             title: "Authentication Error",
@@ -77,15 +78,25 @@ export function PostForm({ children }: PostFormProps) {
         return;
     }
     
-    // Call the new function to add the post to our mock data
-    createPost({ ...data, tags, authorId: user.uid });
+    setIsSubmitting(true);
+    try {
+        await createPost({ ...data, tags, authorId: user.uid });
 
-    toast({
-      title: "Post Published!",
-      description: "Your new blog post has been successfully published.",
-    });
-    // Redirect to the homepage to see the new post
-    router.push("/");
+        toast({
+          title: "Post Published!",
+          description: "Your new blog post has been successfully published.",
+        });
+        router.push("/");
+    } catch (error) {
+        console.error("Failed to create post:", error);
+        toast({
+            title: "Error",
+            description: "Failed to publish your post. Please try again.",
+            variant: "destructive"
+        });
+    } finally {
+        setIsSubmitting(false);
+    }
   };
 
   return (
@@ -153,7 +164,10 @@ export function PostForm({ children }: PostFormProps) {
             </div>
             </CardContent>
             <CardFooter className="p-6 border-t flex justify-end">
-            <Button type="submit" size="lg">Publish Post</Button>
+            <Button type="submit" size="lg" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Publish Post
+            </Button>
             </CardFooter>
         </Card>
         {children}
