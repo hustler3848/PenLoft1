@@ -197,6 +197,39 @@ export function createNewUser(userData: { fuid: string; username: string; email:
     return newUser;
 }
 
+export function createPost(postData: { title: string; content: string; category: string; tags: string[]; authorId: string; }) {
+    const { title, content, category, tags, authorId } = postData;
+    const author = users.find(u => u.fuid === authorId);
+
+    if (!author) {
+        console.error("Author not found. Cannot create post.");
+        return null;
+    }
+
+    // A simple slug generation function
+    const generateSlug = (title: string) => {
+        return title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+    }
+
+    const newPost: Post = {
+        id: `${posts.length + 1}`,
+        slug: generateSlug(title),
+        title: title,
+        content: content,
+        authorId: author.id,
+        category: category,
+        tags: tags,
+        imageUrl: `https://placehold.co/600x400.png`,
+        createdAt: new Date().toISOString(),
+        likes: 0,
+        isBookmarked: false
+    };
+
+    // Add the new post to the beginning of the array so it appears first
+    posts.unshift(newPost);
+    return newPost;
+}
+
 export function getUsers() {
   return users;
 }
@@ -219,10 +252,13 @@ export function getUserByFuid(fuid: string, email?: string | null) {
   // If user does not exist, create a new one.
   // This handles users who sign up and are not in our initial mock data.
   const newUsername = email ? email.split('@')[0] : `user${Math.floor(Math.random() * 10000)}`;
+  const userByUsername = getUserByUsername(newUsername);
+  const finalUsername = userByUsername ? `${newUsername}${Math.floor(Math.random() * 10000)}` : newUsername;
+  
   return createNewUser({
     fuid: fuid,
-    username: newUsername,
-    email: email || `${newUsername}@example.com`,
+    username: finalUsername,
+    email: email || `${finalUsername}@example.com`,
   });
 }
 

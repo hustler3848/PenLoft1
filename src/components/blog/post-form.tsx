@@ -1,9 +1,9 @@
 
 "use client";
 
-import { useState, type ReactNode, createContext, useContext } from "react";
+import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, Controller, FormProvider, useFormContext } from "react-hook-form";
+import { useForm, Controller, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,8 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { X } from "lucide-react";
+import { createPost } from "@/lib/data";
+import { useAuth } from "../auth-provider";
 
 const postSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters long."),
@@ -31,11 +33,17 @@ interface PostFormProps {
 export function PostForm({ children }: PostFormProps) {
   const router = useRouter();
   const { toast } = useToast();
+  const { user } = useAuth(); // We'll need the logged-in user's ID
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   
   const methods = useForm<PostFormData>({
     resolver: zodResolver(postSchema),
+    defaultValues: {
+      title: "",
+      content: "",
+      category: "",
+    }
   });
 
   const {
@@ -60,11 +68,23 @@ export function PostForm({ children }: PostFormProps) {
   };
   
   const onSubmit = (data: PostFormData) => {
-    console.log({ ...data, tags });
+    if (!user) {
+        toast({
+            title: "Authentication Error",
+            description: "You must be signed in to create a post.",
+            variant: "destructive"
+        });
+        return;
+    }
+    
+    // Call the new function to add the post to our mock data
+    createPost({ ...data, tags, authorId: user.uid });
+
     toast({
       title: "Post Published!",
       description: "Your new blog post has been successfully published.",
     });
+    // Redirect to the homepage to see the new post
     router.push("/");
   };
 
