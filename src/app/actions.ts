@@ -1,7 +1,8 @@
+
 "use server";
 
 import { suggestTags, type SuggestTagsInput } from "@/ai/flows/suggest-tags";
-import { suggestContent, type SuggestContentInput, type SuggestContentOutput } from "@/ai/flows/suggest-content";
+import { suggestContent, type SuggestContentOutput, type SuggestContentInput } from "@/ai/flows/suggest-content";
 
 export async function getTagSuggestions(
   input: SuggestTagsInput
@@ -11,7 +12,8 @@ export async function getTagSuggestions(
     return result.tags;
   } catch (error) {
     console.error("Error suggesting tags:", error);
-    return [];
+    // Re-throw the error to be caught by the client-side component
+    throw new Error("Failed to suggest tags.");
   }
 }
 
@@ -23,6 +25,7 @@ export async function getContentSuggestions(
         return result;
     } catch (error) {
         console.error("Error suggesting content:", error);
-        return { suggestions: [] };
+        // Re-throw the error to be caught by the client-side component
+        throw new Error("Failed to suggest content.");
     }
 }
