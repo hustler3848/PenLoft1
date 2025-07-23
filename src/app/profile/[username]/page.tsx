@@ -11,13 +11,13 @@ import { ProfilePageSkeleton } from '@/components/blog/profile-page-skeleton';
 import { PostList } from '@/components/blog/post-list';
 
 export default function ProfilePage({ params }: { params: { username: string } }) {
-  const { username } = params;
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const username = params.username;
     if (!username) return; // Don't fetch data if username is not available yet
 
     const fetchData = async () => {
@@ -38,7 +38,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
       setLoading(false);
     };
     fetchData();
-  }, [username]);
+  }, [params.username]);
 
   if (loading) {
     return <ProfilePageSkeleton />;
