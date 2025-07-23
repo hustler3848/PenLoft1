@@ -1,6 +1,7 @@
 
 export interface User {
   id: string;
+  fuid: string; // Firebase UID
   name: string;
   username: string;
   avatarUrl: string;

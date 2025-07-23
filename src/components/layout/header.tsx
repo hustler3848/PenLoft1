@@ -12,6 +12,7 @@ import { auth } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { getUserByFuid } from "@/lib/data";
 
 export function Header() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -32,9 +33,9 @@ export function Header() {
   };
 
   const getProfileLink = () => {
-    // In a real app, the user's ID would be derived from the user object.
-    // Since we don't have user profiles in the DB, we'll link to a static one.
-    return user ? "/profile/1" : "/sign-in";
+    if (!user) return "/sign-in";
+    const appUser = getUserByFuid(user.uid);
+    return appUser ? `/profile/${appUser.username}` : "/sign-in";
   };
 
 

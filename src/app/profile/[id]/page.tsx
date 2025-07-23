@@ -3,15 +3,15 @@
 
 import { useState, useEffect } from 'react';
 import { notFound } from "next/navigation";
-import { getUser, getPosts, getUsers } from "@/lib/data";
+import { getUserByUsername, getPosts, getUsers } from "@/lib/data";
 import type { User, Post } from '@/lib/types';
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ProfilePageSkeleton } from '@/components/blog/profile-page-skeleton';
 import { PostList } from '@/components/blog/post-list';
 
-export default function ProfilePage({ params }: { params: { id: string } }) {
-  const id = params.id;
+export default function ProfilePage({ params }: { params: { username: string } }) {
+  const username = params.username;
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
@@ -21,7 +21,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
     const fetchData = async () => {
       // Simulate network delay
       await new Promise(resolve => setTimeout(resolve, 500));
-      const userData = getUser(id);
+      const userData = getUserByUsername(username);
       if (userData) {
         setUser(userData);
         const allPostsData = getPosts();
@@ -33,7 +33,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
       setLoading(false);
     };
     fetchData();
-  }, [id]);
+  }, [username]);
 
   if (loading) {
     return <ProfilePageSkeleton />;
@@ -59,6 +59,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
          
           <div className="mt-4">
             <h1 className="font-headline text-3xl font-bold">{user.name}</h1>
+            <p className="text-muted-foreground mt-2">@{user.username}</p>
             <p className="text-muted-foreground mt-2">{user.bio}</p>
           </div>
 

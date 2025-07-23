@@ -30,8 +30,9 @@ export default function PostPage({ params }: { params: { id: string } }) {
       const postData = getPost(id);
       
       if (postData) {
+        const authorData = getUser(postData.authorId);
         setPost(postData);
-        setAuthor(getUser(postData.authorId));
+        setAuthor(authorData);
 
         const allPostsData = getPosts();
         const related = allPostsData
@@ -51,7 +52,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
     return <PostPageSkeleton />;
   }
 
-  if (!post) {
+  if (!post || !author) {
     notFound();
   }
 
@@ -67,7 +68,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
             </h1>
             <div className="flex items-center space-x-6 text-muted-foreground">
             {author && (
-                <Link href={`/profile/${author.id}`} className="flex items-center space-x-2 hover:text-foreground">
+                <Link href={`/profile/${author.username}`} className="flex items-center space-x-2 hover:text-foreground">
                 <Avatar className="h-8 w-8">
                     <AvatarImage src={author.avatarUrl} alt={author.name} />
                     <AvatarFallback>{author.name.charAt(0)}</AvatarFallback>

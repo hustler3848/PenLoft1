@@ -1,9 +1,19 @@
 
 import type { User, Post } from './types';
 
+// In a real app, you would fetch this from a database.
+// We are mapping Firebase UIDs to our mock users.
+const fuidToId: Record<string, string> = {
+    "c8aH423j2eM9n7oP1qR5tU6wXvY3": "1", // aliciakeys
+    "a1bH456j2eM9n7oP1qR5tU6wXvY4": "2", // bencarter
+    "z9yH456j2eM9n7oP1qR5tU6wXvY5": "3", // chloedavis
+};
+
+
 const users: User[] = [
   {
     id: '1',
+    fuid: 'c8aH423j2eM9n7oP1qR5tU6wXvY3',
     name: 'Alicia Keys',
     username: 'aliciakeys',
     avatarUrl: 'https://placehold.co/100x100.png',
@@ -11,6 +21,7 @@ const users: User[] = [
   },
   {
     id: '2',
+    fuid: 'a1bH456j2eM9n7oP1qR5tU6wXvY4',
     name: 'Ben Carter',
     username: 'bencarter',
     avatarUrl: 'https://placehold.co/100x100.png',
@@ -18,6 +29,7 @@ const users: User[] = [
   },
   {
     id: '3',
+    fuid: 'z9yH456j2eM9n7oP1qR5tU6wXvY5',
     name: 'Chloe Davis',
     username: 'chloedavis',
     avatarUrl: 'https://placehold.co/100x100.png',
@@ -168,6 +180,16 @@ export function getUsers() {
 export function getUser(id: string) {
   return users.find((user) => user.id === id);
 }
+
+export function getUserByUsername(username: string) {
+  return users.find((user) => user.username.toLowerCase() === username.toLowerCase());
+}
+
+export function getUserByFuid(fuid: string) {
+    const id = fuidToId[fuid];
+    return getUser(id);
+}
+
 
 export function doesUsernameExist(username: string) {
     return users.some(user => user.username.toLowerCase() === username.toLowerCase());
