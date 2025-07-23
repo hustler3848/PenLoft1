@@ -53,10 +53,11 @@ export function EngagementButtons({
   };
 
   return (
-    <div className="flex items-center gap-4 text-muted-foreground">
+    <div className="flex items-center gap-2 text-muted-foreground">
       <Button
         variant="ghost"
-        size={showLabels ? 'default' : 'icon'}
+        size={showLabels ? 'default' : 'sm'}
+        className="gap-1.5"
         onClick={handleLikeClick}
         aria-pressed={isLiked}
         title={user ? "Like this post" : "Sign in to like this post"}
@@ -67,12 +68,13 @@ export function EngagementButtons({
             isLiked ? "text-destructive fill-destructive" : ""
           )}
         />
-        {showLabels && <span>{likes} Likes</span>}
-        {!showLabels && <span className="text-sm font-medium">{likes}</span>}
+        <span className="text-sm font-medium">{likes}</span>
+        {showLabels && <span className="hidden sm:inline">Likes</span>}
       </Button>
       <Button
         variant="ghost"
-        size={showLabels ? 'default' : 'icon'}
+        size={showLabels ? 'default' : 'sm'}
+        className="gap-1.5"
         onClick={handleBookmarkClick}
         aria-pressed={isBookmarked}
         title={user ? "Bookmark this post" : "Sign in to bookmark this post"}
