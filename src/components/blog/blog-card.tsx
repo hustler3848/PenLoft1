@@ -27,8 +27,8 @@ export function BlogCard({ post, author, className, style }: BlogCardProps) {
   const postExcerpt = post.content.substring(0, 100) + "...";
 
   return (
-    <Card asChild style={style} className={cn("flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1", className)}>
-      <Link href={`/posts/${post.id}`}>
+    <Card style={style} className={cn("flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group", className)}>
+      <Link href={`/posts/${post.id}`} className="flex flex-col h-full">
         <CardHeader className="p-0">
           <div className="relative h-48 w-full">
             <Image
@@ -42,7 +42,7 @@ export function BlogCard({ post, author, className, style }: BlogCardProps) {
           </div>
         </CardHeader>
         <CardContent className="p-6 flex-grow">
-          <CardTitle className="font-headline text-xl mb-2 leading-tight">
+          <CardTitle className="font-headline text-xl mb-2 leading-tight group-hover:text-primary transition-colors">
             {post.title}
           </CardTitle>
           <div className="flex items-center text-sm text-muted-foreground mb-4">
@@ -59,7 +59,7 @@ export function BlogCard({ post, author, className, style }: BlogCardProps) {
           </div>
           <p className="text-muted-foreground">{postExcerpt}</p>
         </CardContent>
-        <CardFooter className="p-6 pt-0 flex flex-col items-start gap-4">
+        <CardFooter className="p-6 pt-0 mt-auto flex flex-col items-start gap-4">
           <div className="flex flex-wrap gap-2">
             {post.tags.slice(0, 3).map((tag) => (
               <Badge key={tag} variant="secondary">
