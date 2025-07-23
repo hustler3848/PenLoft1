@@ -187,8 +187,22 @@ export function getUserByUsername(username: string) {
 }
 
 export function getUserByFuid(fuid: string) {
-    const id = fuidToId[fuid];
-    return getUser(id);
+  let user = users.find(u => u.fuid === fuid);
+  if (user) {
+    return user;
+  }
+  
+  // This part is for newly signed up users that are not in our mock data
+  const newUser = {
+    id: `${users.length + 1}`,
+    fuid: fuid,
+    name: 'New User',
+    username: `user${users.length + 1}`,
+    avatarUrl: 'https://placehold.co/100x100.png',
+    bio: 'This is a new user profile!',
+  };
+  users.push(newUser);
+  return newUser;
 }
 
 
