@@ -1,6 +1,8 @@
+
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Heart, Bookmark } from "lucide-react";
@@ -16,6 +18,8 @@ export function EngagementButtons({
   initialBookmarked,
   showLabels = false,
 }: EngagementButtonsProps) {
+  const router = useRouter();
+  // We keep the state for visual feedback, but the action will be a redirect.
   const [likes, setLikes] = useState(initialLikes);
   const [isLiked, setIsLiked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(initialBookmarked);
@@ -23,14 +27,17 @@ export function EngagementButtons({
   const handleLikeClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsLiked((prev) => !prev);
-    setLikes((prev) => (isLiked ? prev - 1 : prev + 1));
+    // In a real app, you'd check for authentication state.
+    // Here, we'll redirect to a login page.
+    router.push("/sign-in");
   };
 
   const handleBookmarkClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsBookmarked((prev) => !prev);
+    // In a real app, you'd check for authentication state.
+    // Here, we'll redirect to a login page.
+    router.push("/sign-in");
   };
 
   return (
@@ -40,6 +47,7 @@ export function EngagementButtons({
         size={showLabels ? 'default' : 'icon'}
         onClick={handleLikeClick}
         aria-pressed={isLiked}
+        title="Sign in to like this post"
       >
         <Heart
           className={cn(
@@ -55,6 +63,7 @@ export function EngagementButtons({
         size={showLabels ? 'default' : 'icon'}
         onClick={handleBookmarkClick}
         aria-pressed={isBookmarked}
+        title="Sign in to bookmark this post"
       >
         <Bookmark
           className={cn(
