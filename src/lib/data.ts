@@ -173,6 +173,19 @@ This post will walk you through the steps to build a personal brand that resonat
   },
 ];
 
+export function createNewUser(userData: { fuid: string; username: string; email: string; }) {
+    const newUser: User = {
+        id: `${users.length + 1}`,
+        fuid: userData.fuid,
+        name: userData.username, // Default name to username
+        username: userData.username,
+        avatarUrl: 'https://placehold.co/100x100.png',
+        bio: 'This is a new PenLoft author!',
+    };
+    users.push(newUser);
+    return newUser;
+}
+
 export function getUsers() {
   return users;
 }
@@ -187,22 +200,7 @@ export function getUserByUsername(username: string) {
 }
 
 export function getUserByFuid(fuid: string) {
-  let user = users.find(u => u.fuid === fuid);
-  if (user) {
-    return user;
-  }
-  
-  // This part is for newly signed up users that are not in our mock data
-  const newUser = {
-    id: `${users.length + 1}`,
-    fuid: fuid,
-    name: 'New User',
-    username: `user${users.length + 1}`,
-    avatarUrl: 'https://placehold.co/100x100.png',
-    bio: 'This is a new user profile!',
-  };
-  users.push(newUser);
-  return newUser;
+  return users.find(u => u.fuid === fuid);
 }
 
 

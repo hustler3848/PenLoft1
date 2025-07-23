@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
-import { doesUsernameExist } from "@/lib/data";
+import { doesUsernameExist, createNewUser } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -45,9 +45,14 @@ export default function SignUpPage() {
   const onSubmit = async (data: SignUpFormData) => {
     setIsLoading(true);
     try {
-      // Note: In a real app, you'd also save the username to a Firestore collection
-      // associated with the user's UID from the created user object.
-      await createUserWithEmailAndPassword(auth, data.email, data.password);
+      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      // Save the new user to our mock data store
+      createNewUser({
+          fuid: userCredential.user.uid,
+          username: data.username,
+          email: data.email,
+      });
+
       toast({
         title: "Account Created!",
         description: "Welcome to PenLoft. You have been signed in.",
