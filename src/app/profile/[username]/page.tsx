@@ -15,9 +15,9 @@ export default function ProfilePage({ params }: { params: { username: string } }
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const username = params.username;
 
   useEffect(() => {
-    const username = params.username;
     if (!username) return; // Don't fetch data if username is not available yet
 
     const fetchData = async () => {
@@ -38,7 +38,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
       setLoading(false);
     };
     fetchData();
-  }, [params.username]);
+  }, [username]);
 
   if (loading) {
     return <ProfilePageSkeleton />;
