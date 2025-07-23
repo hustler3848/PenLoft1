@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { notFound } from "next/navigation";
-import { getUser, getPosts } from "@/lib/data";
+import { getUser, getPosts, getUsers } from "@/lib/data";
 import type { User, Post } from '@/lib/types';
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,7 +11,7 @@ import { ProfilePageSkeleton } from '@/components/blog/profile-page-skeleton';
 import { PostList } from '@/components/blog/post-list';
 
 export default function ProfilePage({ params }: { params: { id: string } }) {
-  const { id } = params;
+  const id = params.id;
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
